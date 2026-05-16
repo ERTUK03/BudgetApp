@@ -19,7 +19,13 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Install MAUI Android workload
-        run: dotnet workload install maui-android
+        run: |
+          dotnet workload install maui-android
+          dotnet workload update
+
+      - name: Pin Android SDK version
+        run: |
+          dotnet add mobile/BudgetApp/BudgetApp.csproj package Microsoft.Android.Sdk.Linux --version 34.99.0 --no-restore || true
 
       - name: Restore packages
         run: dotnet restore mobile/BudgetApp/BudgetApp.csproj
@@ -32,14 +38,17 @@ jobs:
           -p:AndroidKeyStore=false
           -p:AndroidSdkDirectory=$ANDROID_SDK_ROOT
           -p:AndroidEnableAssemblyCompression=false
-          -t:SignAndroidPackage
+          -p:_ApkPerAbi=false
+          -t:PackageForAndroid
 
       - name: Find APK
-        run: find mobile/BudgetApp -name "*.apk"
+        run: find mobile/BudgetApp -name "*.apk" -o -name "*.aab"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: BudgetApp-APK
-          path: mobile/BudgetApp/**/*.apk
-          if-no-files-found: warn
+          path: |
+            mobile/BudgetApp/**/*.apk
+            mobile/BudgetApp/**/*.aab
+          if-no-files-found: warns
