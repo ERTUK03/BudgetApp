@@ -19,7 +19,7 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Install MAUI Android workload
-        run: dotnet workload install maui-android --skip-sign-check
+        run: dotnet workload install maui-android --version 9.0.100 --skip-sign-check
 
       - name: Restore packages
         run: dotnet restore mobile/BudgetApp/BudgetApp.csproj -p:TargetFramework=net9.0-android

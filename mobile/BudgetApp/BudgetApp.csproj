@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net9.0-android</TargetFrameworks>
+    <TargetFramework>net9.0-android</TargetFramework>
     <RootNamespace>BudgetApp</RootNamespace>
     <UseMaui>true</UseMaui>
     <ApplicationId>com.budgetapp.mobile</ApplicationId>
@@ -8,6 +8,7 @@
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AndroidSdkVersion>34</AndroidSdkVersion>
   </PropertyGroup>
 
   <ItemGroup>
