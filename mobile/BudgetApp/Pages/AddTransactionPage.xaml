@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BudgetApp.Pages.AddTransactionPage"
+             Title="Nowa transakcja"
+             BackgroundColor="#080c14">
+
+  <ScrollView>
+    <VerticalStackLayout Padding="16" Spacing="16">
+
+      <!-- Type toggle -->
+      <Frame BackgroundColor="#0f1623" BorderColor="#1e2d45" CornerRadius="12" Padding="6">
+        <Grid ColumnDefinitions="*,*" ColumnSpacing="4">
+          <Button x:Name="ExpenseBtn" Text="💸 Wydatek" Clicked="OnExpense"
+                  BackgroundColor="#ef4444" TextColor="White" CornerRadius="8" FontAttributes="Bold"/>
+          <Button x:Name="IncomeBtn" Text="💰 Przychód" Grid.Column="1" Clicked="OnIncome"
+                  BackgroundColor="#161e2e" TextColor="#7a92b0" CornerRadius="8"/>
+        </Grid>
+      </Frame>
+
+      <Frame BackgroundColor="#0f1623" BorderColor="#1e2d45" CornerRadius="12" Padding="20">
+        <VerticalStackLayout Spacing="16">
+
+          <VerticalStackLayout Spacing="6">
+            <Label Text="TYTUŁ" FontSize="11" TextColor="#7a92b0" CharacterSpacing="1"/>
+            <Entry x:Name="TitleEntry" Placeholder="np. Zakupy spożywcze"
+                   BackgroundColor="#161e2e" TextColor="#e2eaf4" PlaceholderColor="#3a4a60"/>
+          </VerticalStackLayout>
+
+          <VerticalStackLayout Spacing="6">
+            <Label Text="KWOTA (PLN)" FontSize="11" TextColor="#7a92b0" CharacterSpacing="1"/>
+            <Entry x:Name="AmountEntry" Placeholder="0.00" Keyboard="Numeric"
+                   BackgroundColor="#161e2e" TextColor="#e2eaf4" PlaceholderColor="#3a4a60"/>
+          </VerticalStackLayout>
+
+          <VerticalStackLayout Spacing="6">
+            <Label Text="DATA" FontSize="11" TextColor="#7a92b0" CharacterSpacing="1"/>
+            <DatePicker x:Name="DatePicker" BackgroundColor="#161e2e" TextColor="#e2eaf4" Format="dd.MM.yyyy"/>
+          </VerticalStackLayout>
+
+          <VerticalStackLayout Spacing="6">
+            <Label Text="KATEGORIA" FontSize="11" TextColor="#7a92b0" CharacterSpacing="1"/>
+            <Picker x:Name="CategoryPicker" Title="Wybierz kategorię"
+                    TextColor="#e2eaf4" BackgroundColor="#161e2e"/>
+          </VerticalStackLayout>
+
+          <VerticalStackLayout Spacing="6">
+            <Label Text="NOTATKA" FontSize="11" TextColor="#7a92b0" CharacterSpacing="1"/>
+            <Entry x:Name="NoteEntry" Placeholder="Opcjonalna notatka"
+                   BackgroundColor="#161e2e" TextColor="#e2eaf4" PlaceholderColor="#3a4a60"/>
+          </VerticalStackLayout>
+
+          <!-- 🌍 Natywna funkcja: Geolokalizacja -->
+          <Frame BackgroundColor="#161e2e" BorderColor="#1e2d45" CornerRadius="8" Padding="12">
+            <VerticalStackLayout Spacing="6">
+              <HorizontalStackLayout Spacing="8">
+                <Label Text="📍 Lokalizacja zakupu" TextColor="#7a92b0" FontSize="13" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
+                <Button Text="Pobierz" Clicked="OnGetLocation" BackgroundColor="#1e2d45"
+                        TextColor="#60a5fa" CornerRadius="6" Padding="10,5" FontSize="12"/>
+              </HorizontalStackLayout>
+              <Label x:Name="LocationLabel" Text="Brak lokalizacji" TextColor="#3a4a60" FontSize="12"/>
+            </VerticalStackLayout>
+          </Frame>
+
+          <Label x:Name="ErrorLabel" TextColor="#ef4444" FontSize="13" IsVisible="False"/>
+
+          <Button x:Name="SaveBtn" Text="Zapisz transakcję" Clicked="OnSave"
+                  BackgroundColor="#3b82f6" TextColor="White" CornerRadius="10"
+                  FontAttributes="Bold" HeightRequest="52" Margin="0,4,0,0"/>
+
+        </VerticalStackLayout>
+      </Frame>
+
+    </VerticalStackLayout>
+  </ScrollView>
+</ContentPage>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BudgetApp.Pages.RegisterPage"
+             Title="Rejestracja"
+             BackgroundColor="#080c14">
+
+  <ScrollView>
+    <VerticalStackLayout Padding="32,60,32,32" Spacing="0">
+
+      <Label Text="Nowe konto" FontSize="32" FontAttributes="Bold"
+             TextColor="#e2eaf4" HorizontalOptions="Center" Margin="0,0,0,8"/>
+      <Label Text="Zacznij śledzić swoje finanse" FontSize="14" TextColor="#7a92b0"
+             HorizontalOptions="Center" Margin="0,0,0,40"/>
+
+      <Frame BackgroundColor="#0f1623" BorderColor="#1e2d45" CornerRadius="16" Padding="24">
+        <VerticalStackLayout Spacing="16">
+
+          <VerticalStackLayout Spacing="6">
+            <Label Text="E-MAIL" FontSize="11" TextColor="#7a92b0" FontAttributes="Bold" CharacterSpacing="1"/>
+            <Entry x:Name="EmailEntry" Keyboard="Email" BackgroundColor="#161e2e"
+                   TextColor="#e2eaf4" PlaceholderColor="#3a4a60" Placeholder="jan@example.com"/>
+          </VerticalStackLayout>
+
+          <VerticalStackLayout Spacing="6">
+            <Label Text="NAZWA UŻYTKOWNIKA" FontSize="11" TextColor="#7a92b0" FontAttributes="Bold" CharacterSpacing="1"/>
+            <Entry x:Name="UsernameEntry" BackgroundColor="#161e2e"
+                   TextColor="#e2eaf4" PlaceholderColor="#3a4a60" Placeholder="jan_kowalski"/>
+          </VerticalStackLayout>
+
+          <VerticalStackLayout Spacing="6">
+            <Label Text="HASŁO" FontSize="11" TextColor="#7a92b0" FontAttributes="Bold" CharacterSpacing="1"/>
+            <Entry x:Name="PasswordEntry" IsPassword="True" BackgroundColor="#161e2e"
+                   TextColor="#e2eaf4" PlaceholderColor="#3a4a60" Placeholder="min. 6 znaków"/>
+          </VerticalStackLayout>
+
+          <Label x:Name="ErrorLabel" TextColor="#ef4444" FontSize="13" IsVisible="False"/>
+
+          <Button x:Name="RegisterBtn" Text="Utwórz konto" Clicked="OnRegister"
+                  BackgroundColor="#3b82f6" TextColor="White"
+                  CornerRadius="10" FontAttributes="Bold" HeightRequest="50" Margin="0,8,0,0"/>
+
+          <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
+            <Label Text="Masz już konto?" TextColor="#7a92b0" FontSize="13" VerticalOptions="Center"/>
+            <Label Text="Zaloguj się" TextColor="#3b82f6" FontSize="13"
+                   FontAttributes="Bold" VerticalOptions="Center">
+              <Label.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnLogin"/>
+              </Label.GestureRecognizers>
+            </Label>
+          </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+      </Frame>
+    </VerticalStackLayout>
+  </ScrollView>
+</ContentPage>

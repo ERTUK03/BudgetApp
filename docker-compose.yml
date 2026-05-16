@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  api:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - sqlite_data:/data
+    environment:
+      - SECRET_KEY=dev-secret-change-in-production
+      - DATABASE_URL=sqlite:////data/budgetapp.db
+    restart: unless-stopped
+
+volumes:
+  sqlite_data:

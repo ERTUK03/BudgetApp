@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BudgetApp.Pages.DashboardPage"
+             Title="Dashboard"
+             BackgroundColor="#080c14">
+
+  <Shell.TitleColor>#e2eaf4</Shell.TitleColor>
+
+  <RefreshView x:Name="RefreshView" Refreshing="OnRefresh">
+    <ScrollView>
+      <VerticalStackLayout Padding="16" Spacing="16">
+
+        <!-- Header -->
+        <HorizontalStackLayout HorizontalOptions="Fill" Spacing="8">
+          <Label x:Name="WelcomeLabel" Text="Cześć!" FontSize="22"
+                 FontAttributes="Bold" TextColor="#e2eaf4" HorizontalOptions="StartAndExpand"/>
+          <Picker x:Name="MonthPicker" Title="Miesiąc" TextColor="#e2eaf4"
+                  BackgroundColor="#161e2e" SelectedIndexChanged="OnPeriodChanged"/>
+          <Picker x:Name="YearPicker" Title="Rok" TextColor="#e2eaf4"
+                  BackgroundColor="#161e2e" SelectedIndexChanged="OnPeriodChanged" WidthRequest="80"/>
+        </HorizontalStackLayout>
+
+        <!-- Stats Grid -->
+        <Grid ColumnDefinitions="*,*" RowDefinitions="*,*" ColumnSpacing="12" RowSpacing="12">
+
+          <Frame Grid.Row="0" Grid.Column="0" BackgroundColor="#0f1623" BorderColor="#1e2d45" CornerRadius="12" Padding="16">
+            <VerticalStackLayout Spacing="4">
+              <Label Text="PRZYCHODY" FontSize="10" TextColor="#7a92b0" CharacterSpacing="1"/>
+              <Label x:Name="IncomeLabel" Text="0,00 zł" FontSize="20"
+                     FontAttributes="Bold" TextColor="#22c55e"/>
+            </VerticalStackLayout>
+          </Frame>
+
+          <Frame Grid.Row="0" Grid.Column="1" BackgroundColor="#0f1623" BorderColor="#1e2d45" CornerRadius="12" Padding="16">
+            <VerticalStackLayout Spacing="4">
+              <Label Text="WYDATKI" FontSize="10" TextColor="#7a92b0" CharacterSpacing="1"/>
+              <Label x:Name="ExpenseLabel" Text="0,00 zł" FontSize="20"
+                     FontAttributes="Bold" TextColor="#ef4444"/>
+            </VerticalStackLayout>
+          </Frame>
+
+          <Frame Grid.Row="1" Grid.Column="0" BackgroundColor="#0f1623" BorderColor="#1e2d45" CornerRadius="12" Padding="16">
+            <VerticalStackLayout Spacing="4">
+              <Label Text="BILANS" FontSize="10" TextColor="#7a92b0" CharacterSpacing="1"/>
+              <Label x:Name="BalanceLabel" Text="0,00 zł" FontSize="20"
+                     FontAttributes="Bold" TextColor="#60a5fa"/>
+            </VerticalStackLayout>
+          </Frame>
+
+          <Frame Grid.Row="1" Grid.Column="1" BackgroundColor="#0f1623" BorderColor="#1e2d45" CornerRadius="12" Padding="16">
+            <VerticalStackLayout Spacing="4">
+              <Label Text="TRANSAKCJE" FontSize="10" TextColor="#7a92b0" CharacterSpacing="1"/>
+              <Label x:Name="TxCountLabel" Text="0" FontSize="20"
+                     FontAttributes="Bold" TextColor="#e2eaf4"/>
+            </VerticalStackLayout>
+          </Frame>
+        </Grid>
+
+        <!-- Recent Transactions -->
+        <Label Text="Ostatnie transakcje" FontSize="16" FontAttributes="Bold" TextColor="#e2eaf4"/>
+
+        <CollectionView x:Name="RecentList" HeightRequest="300">
+          <CollectionView.ItemTemplate>
+            <DataTemplate>
+              <Frame BackgroundColor="#0f1623" BorderColor="#1e2d45" CornerRadius="10"
+                     Padding="14,10" Margin="0,0,0,8">
+                <Grid ColumnDefinitions="*,Auto">
+                  <VerticalStackLayout Grid.Column="0" Spacing="2">
+                    <Label Text="{Binding Title}" FontSize="15" TextColor="#e2eaf4" FontAttributes="Bold"/>
+                    <Label Text="{Binding CategoryDisplay}" FontSize="12" TextColor="#7a92b0"/>
+                  </VerticalStackLayout>
+                  <VerticalStackLayout Grid.Column="1" HorizontalOptions="End" Spacing="2">
+                    <Label Text="{Binding AmountDisplay}" FontSize="15" FontAttributes="Bold"
+                           TextColor="{Binding AmountColor}" HorizontalOptions="End"/>
+                    <Label Text="{Binding DateDisplay}" FontSize="11" TextColor="#7a92b0" HorizontalOptions="End"/>
+                  </VerticalStackLayout>
+                </Grid>
+              </Frame>
+            </DataTemplate>
+          </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Navigation Buttons -->
+        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+          <Button Grid.Column="0" Text="📋 Transakcje" Clicked="OnGoTransactions"
+                  BackgroundColor="#161e2e" TextColor="#e2eaf4" CornerRadius="10" BorderColor="#1e2d45" BorderWidth="1"/>
+          <Button Grid.Column="1" Text="➕ Dodaj" Clicked="OnAddTransaction"
+                  BackgroundColor="#3b82f6" TextColor="White" CornerRadius="10" FontAttributes="Bold"/>
+        </Grid>
+
+        <!-- Offline indicator -->
+        <Frame x:Name="OfflineBanner" BackgroundColor="#f59e0b" BorderColor="Transparent"
+               CornerRadius="8" Padding="10,6" IsVisible="False">
+          <Label Text="⚠️ Tryb offline – dane z lokalnej pamięci" TextColor="#000"
+                 FontSize="13" FontAttributes="Bold" HorizontalOptions="Center"/>
+        </Frame>
+
+      </VerticalStackLayout>
+    </ScrollView>
+  </RefreshView>
+</ContentPage>
