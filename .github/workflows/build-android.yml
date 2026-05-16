@@ -33,10 +33,11 @@ jobs:
           -p:AndroidKeyStore=false
           -p:AndroidSdkDirectory=$ANDROID_SDK_ROOT
           -p:AndroidEnableAssemblyCompression=false
-          -t:PackageForAndroid
+          --no-incremental
+          -t:SignAndroidPackage
 
-      - name: Find APK
-        run: find mobile/BudgetApp -name "*.apk"
+      - name: Find all output files
+        run: find mobile/BudgetApp/bin mobile/BudgetApp/obj -name "*.apk" -o -name "*.aab" 2>/dev/null || echo "No APK found"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
