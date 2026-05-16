@@ -25,14 +25,14 @@ jobs:
         run: dotnet restore mobile/BudgetApp/BudgetApp.csproj
 
       - name: Build APK
-        run: |
-          dotnet build mobile/BudgetApp/BudgetApp.csproj \
-            -f net9.0-android \
-            -c Debug \
-            -p:AndroidKeyStore=false \
-            -p:AndroidSdkDirectory=$ANDROID_SDK_ROOT \
-	    -p:AndroidEnableAssemblyCompression=false \
-            -t:SignAndroidPackage
+        run: >-
+          dotnet build mobile/BudgetApp/BudgetApp.csproj
+          -f net9.0-android
+          -c Debug
+          -p:AndroidKeyStore=false
+          -p:AndroidSdkDirectory=$ANDROID_SDK_ROOT
+          -p:AndroidEnableAssemblyCompression=false
+          -t:SignAndroidPackage
 
       - name: Find APK
         run: find mobile/BudgetApp -name "*.apk"
