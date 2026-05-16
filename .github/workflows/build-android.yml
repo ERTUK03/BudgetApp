@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Android APK (Expo EAS)
 
 on:
   push:
@@ -13,35 +13,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          dotnet-version: '9.0.x'
+          node-version: '20'
 
-      - name: Install MAUI Android workload
-        run: |
-          dotnet workload install maui-android --from-rollback-file https://aka.ms/dotnet/9.0.1xx/daily/roslyn-compiler.json --skip-sign-check || dotnet workload install maui-android
-
-      - name: Restore packages
-        run: dotnet restore mobile/BudgetApp/BudgetApp.csproj
-
-      - name: Build APK
-        run: >-
-          dotnet build mobile/BudgetApp/BudgetApp.csproj
-          -f net9.0-android
-          -c Debug
-          -p:AndroidKeyStore=false
-          -p:AndroidSdkDirectory=$ANDROID_SDK_ROOT
-          -p:AndroidEnableAssemblyCompression=false
-          --no-incremental
-          -t:SignAndroidPackage
-
-      - name: Find all output files
-        run: find mobile/BudgetApp/bin mobile/BudgetApp/obj -name "*.apk" -o -name "*.aab" 2>/dev/null || echo "No APK found"
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - name: Setup Expo and EAS
+        uses: expo/expo-github-action@v8
         with:
-          name: BudgetApp-APK
-          path: mobile/BudgetApp/**/*.apk
-          if-no-files-found: warn
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        working-directory: mobile
+        run: npm install
+
+      - name: Build APK with EAS
+        working-directory: mobile
+        run: eas build -p android --profile preview --non-interactive --wait
