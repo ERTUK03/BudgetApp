@@ -24,8 +24,14 @@ jobs:
       - name: Restore packages
         run: dotnet restore mobile/BudgetApp/BudgetApp.csproj -p:TargetFramework=net9.0-android
 
-      - name: Build APK
-        run: dotnet publish mobile/BudgetApp/BudgetApp.csproj -f net9.0-android -c Release -p:AndroidKeyStore=false -p:AndroidSdkDirectory=$env:ANDROID_HOME
+      - name: Build and package APK
+        run: |
+          dotnet build mobile/BudgetApp/BudgetApp.csproj `
+            -f net9.0-android `
+            -c Debug `
+            -p:AndroidKeyStore=false `
+            -p:AndroidSdkDirectory=$env:ANDROID_HOME `
+            -t:SignAndroidPackage
 
       - name: Find APK
         run: Get-ChildItem -Recurse -Filter "*.apk" mobile/BudgetApp/
@@ -35,6 +41,5 @@ jobs:
         with:
           name: BudgetApp-APK
           path: |
-            mobile/BudgetApp/bin/**/*.apk
-            mobile/BudgetApp/obj/**/*.apk
+            mobile/BudgetApp/**/*.apk
           if-no-files-found: warn
