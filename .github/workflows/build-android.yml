@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -19,27 +19,26 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Install MAUI Android workload
-        run: dotnet workload install maui-android --version 9.0.100 --skip-sign-check
+        run: dotnet workload install maui-android
 
       - name: Restore packages
-        run: dotnet restore mobile/BudgetApp/BudgetApp.csproj -p:TargetFramework=net9.0-android
+        run: dotnet restore mobile/BudgetApp/BudgetApp.csproj
 
-      - name: Build and package APK
+      - name: Build APK
         run: |
-          dotnet build mobile/BudgetApp/BudgetApp.csproj `
-            -f net9.0-android `
-            -c Debug `
-            -p:AndroidKeyStore=false `
-            -p:AndroidSdkDirectory=$env:ANDROID_HOME `
+          dotnet build mobile/BudgetApp/BudgetApp.csproj \
+            -f net9.0-android \
+            -c Release \
+            -p:AndroidKeyStore=false \
+            -p:AndroidSdkDirectory=$ANDROID_SDK_ROOT \
             -t:SignAndroidPackage
 
       - name: Find APK
-        run: Get-ChildItem -Recurse -Filter "*.apk" mobile/BudgetApp/
+        run: find mobile/BudgetApp -name "*.apk"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: BudgetApp-APK
-          path: |
-            mobile/BudgetApp/**/*.apk
+          path: mobile/BudgetApp/**/*.apk
           if-no-files-found: warn
