@@ -1,6 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 
-const BASE_URL = "http://10.0.2.2:8000"; // Android emulator → localhost
+const BASE_URL = "http://localhost:8000"; // Android emulator → localhost
 // For physical device: use your computer's local IP e.g. http://192.168.1.x:8000
 // For production: replace with deployed URL
 
