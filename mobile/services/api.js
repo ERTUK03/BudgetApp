@@ -1,6 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 
-const BASE_URL = "budgetapp-production-1afe.up.railway.app"; // Android emulator → localhost
+const BASE_URL = "https://budgetapp-production-1afe.up.railway.app"; // Android emulator → localhost
 // For physical device: use your computer's local IP e.g. http://192.168.1.x:8000
 // For production: replace with deployed URL
 
