@@ -6,9 +6,7 @@ Projekt semestralny — Projektowanie i programowanie aplikacji PWA i mobilnych 
 
 ## 1. Opis aplikacji
 
-**BudgetApp** to aplikacja do zarządzania budżetem osobistym. Umożliwia śledzenie przychodów
-i wydatków, kategoryzowanie transakcji, przeglądanie statystyk miesięcznych oraz planowanie
-budżetu. System działa jako trio: backend API + aplikacja PWA + aplikacja mobilna (Android).
+**BudgetApp** to aplikacja do zarządzania budżetem osobistym. Umożliwia śledzenie przychodów i wydatków, kategoryzowanie transakcji, przeglądanie statystyk miesięcznych oraz planowanie budżetu. System działa jako trio: backend API + aplikacja PWA + aplikacja mobilna (Android).
 
 **Grupa docelowa:** Osoby prywatne chcące kontrolować swoje finanse na każdym urządzeniu.
 
@@ -18,7 +16,6 @@ budżetu. System działa jako trio: backend API + aplikacja PWA + aplikacja mobi
 - Kategorie z ikonami emoji i kolorami
 - Statystyki miesięczne z wykresami (wykres kołowy, słupkowy)
 - Tryb offline w PWA (Service Worker + kolejka synchronizacji)
-- Tryb offline w aplikacji mobilnej (SQLite cache + pending queue)
 - Natywna funkcja mobilna: **geolokalizacja** (zapisywanie miejsca transakcji)
 
 ---
@@ -28,17 +25,17 @@ budżetu. System działa jako trio: backend API + aplikacja PWA + aplikacja mobi
 ```
 ┌─────────────┐        REST API (JSON)       ┌─────────────────────┐
 │  PWA React  │ ◄──────────────────────────► │  FastAPI Backend     │
-│  (Vercel)   │                               │  (Docker/Railway)   │
+│  (Vercel)   │                               │  (Railway)          │
 └─────────────┘                               │                     │
                                               │  SQLite DB          │
-┌─────────────┐        REST API (JSON)       │  (persistent vol.)  │
-│ .NET MAUI   │ ◄──────────────────────────► │                     │
-│  (Android)  │                               └─────────────────────┘
+┌─────────────┐        REST API (JSON)        │                     │
+│ React Native│ ◄──────────────────────────► │                     │
+│  Expo (APK) │                               └─────────────────────┘
 └─────────────┘
 
 Offline:
   PWA → Service Worker (NetworkFirst) + localStorage queue
-  MAUI → SQLite local cache + pending sync queue
+  Mobile → AsyncStorage local cache
 ```
 
 ---
@@ -49,16 +46,16 @@ Offline:
 |---|---|---|
 | Backend | **FastAPI** (Python) | Szybki development, automatyczny Swagger, async support |
 | Baza danych | **SQLite** + SQLAlchemy | Bezserwerowa, zero konfiguracji, idealna dla projektu solo |
-| PWA | **React + Vite + vite-plugin-pwa** | Najlepsza ekosystem, najszybszy HMR, prosty Service Worker |
-| Mobile | **.NET MAUI** | Cross-platform z C#, natywne API (Geolocation, SecureStorage) |
-| Deploy backend | **Docker** | Izolacja, powtarzalność, łatwy deploy na każdym VPS |
+| PWA | **React + Vite + vite-plugin-pwa** | Najlepszy ekosystem, najszybszy HMR, prosty Service Worker |
+| Mobile | **React Native + Expo** | Cross-platform z JavaScript, natywne API (Geolocation, SecureStore), łatwy build przez EAS |
+| Deploy backend | **Railway** | Automatyczny CI/CD z GitHub, darmowy tier, HTTPS |
 | Deploy PWA | **Vercel** | Darmowy hosting, automatyczny CI/CD z GitHub |
 
 ---
 
 ## 4. Opis API
 
-Pełna dokumentacja: `http://localhost:8000/docs` (Swagger UI)
+Pełna dokumentacja: https://budgetapp-production-1afe.up.railway.app/docs (Swagger UI)
 
 | Endpoint | Metoda | Opis |
 |---|---|---|
@@ -106,14 +103,14 @@ Wszystkie endpointy (oprócz auth) wymagają nagłówka `Authorization: Bearer <
 - **CORS** — skonfigurowany w FastAPI
 - **Walidacja danych** — Pydantic v2 (typy, zakresy, email)
 - **HTTPS** — wymuszone przez hosting (Vercel/Railway)
-- **SecureStorage** w MAUI — token JWT przechowywany w bezpiecznym magazynie urządzenia
+- **SecureStore** w Expo — token JWT przechowywany w bezpiecznym magazynie urządzenia
 - **XSS** — React escapuje dane z API domyślnie
 
 ---
 
 ## 7. Instrukcja uruchomienia
 
-### Backend (Docker)
+### Backend (lokalnie z Docker)
 
 ```bash
 cd budgetapp
@@ -122,15 +119,10 @@ docker-compose up -d
 # Swagger UI: http://localhost:8000/docs
 ```
 
-### Backend (lokalnie bez Docker)
+### Backend (produkcja)
+Działa automatycznie na Railway: https://budgetapp-production-1afe.up.railway.app
 
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-```
-
-### PWA
+### PWA (lokalnie)
 
 ```bash
 cd pwa
@@ -139,23 +131,39 @@ npm run dev       # dev: http://localhost:5173
 npm run build     # produkcja w dist/
 ```
 
-Zmień URL backendu w `pwa/.env`:
+Plik `pwa/.env`:
 ```
-VITE_API_URL=https://twoj-backend.railway.app
+VITE_API_URL=https://budgetapp-production-1afe.up.railway.app
 ```
 
-### Aplikacja mobilna (.NET MAUI)
+### PWA (produkcja)
+Dostępna na Vercel — automatyczny deploy z GitHub.
 
+### Aplikacja mobilna (React Native + Expo)
+
+#### Uruchomienie lokalnie
 ```bash
-cd mobile/BudgetApp
-dotnet restore
-dotnet build -t:Run -f net9.0-android
+cd mobile
+npm install
+npx expo start
 ```
 
-Zmień `BaseUrl` w `Services/ApiService.cs`:
-- Emulator Android: `http://10.0.2.2:8000`
-- Urządzenie fizyczne: `http://<IP-komputera>:8000`
-- Produkcja: `https://twoj-backend.railway.app`
+#### Budowanie APK przez EAS
+```bash
+cd mobile
+eas build -p android --profile preview
+```
+
+Pobierz APK z: https://expo.dev/accounts/ertuk03/projects/budgetapp-mobile/builds
+
+#### Instalacja na emulatorze/urządzeniu
+```powershell
+# Uruchomienie emulatora
+E:\Android\emulator\emulator.exe -avd Pixel5 -no-metrics -no-snapshot-load
+
+# Instalacja APK
+E:\Android\platform-tools\adb.exe install -r nazwa_pliku.apk
+```
 
 ---
 
@@ -182,11 +190,19 @@ budgetapp/
 │   │   └── styles.css       # Design system
 │   ├── vite.config.js       # PWA plugin + proxy
 │   └── index.html
-├── mobile/BudgetApp/
-│   ├── Models/              # DTOs + SQLite cache model
-│   ├── Services/            # ApiService, AuthService, LocalDbService
-│   ├── Pages/               # Login, Register, Dashboard, Transactions, AddTransaction
-│   └── BudgetApp.csproj
+├── mobile/
+│   ├── app/
+│   │   ├── _layout.js       # Root layout z auth
+│   │   ├── login.js         # Ekran logowania
+│   │   ├── register.js      # Ekran rejestracji
+│   │   └── (tabs)/          # Dashboard, Transactions, Add, Categories
+│   ├── services/
+│   │   ├── api.js           # REST API client
+│   │   └── AuthContext.js   # Auth state z SecureStore
+│   ├── app.json             # Konfiguracja Expo
+│   ├── eas.json             # Konfiguracja EAS Build
+│   └── package.json
+├── .github/workflows/       # GitHub Actions (EAS Build)
 └── docker-compose.yml
 ```
 
@@ -199,6 +215,6 @@ budgetapp/
 - Wiele walut z przeliczaniem
 - Cele oszczędnościowe
 - WebSocket dla aktualizacji w czasie rzeczywistym
-- Biometryczne logowanie w MAUI
+- Biometryczne logowanie w Expo
 - Wykresy trendów miesięcznych (ostatnie 6/12 miesięcy)
 - Import wyciągu bankowego (CSV)
