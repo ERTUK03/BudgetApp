@@ -10,7 +10,7 @@ import math
 
 router = APIRouter(prefix="/api/transactions", tags=["transactions"])
 
-
+# Get transactions
 @router.get("", response_model=schemas.TransactionList)
 def list_transactions(
     page: int = Query(1, ge=1),
@@ -44,7 +44,7 @@ def list_transactions(
         "pages": max(1, math.ceil(total / per_page)),
     }
 
-
+# Make transactins
 @router.post("", response_model=schemas.TransactionOut, status_code=201)
 def create_transaction(
     data: schemas.TransactionCreate,
@@ -65,7 +65,7 @@ def create_transaction(
     db.refresh(tx)
     return tx
 
-
+# Summarize
 @router.get("/summary/monthly", response_model=schemas.MonthlySummary)
 def monthly_summary(
     month: int = Query(..., ge=1, le=12),
@@ -101,7 +101,7 @@ def monthly_summary(
         "by_category": list(by_cat.values()),
     }
 
-
+# Get transaction
 @router.get("/{tx_id}", response_model=schemas.TransactionOut)
 def get_transaction(
     tx_id: int,
@@ -116,7 +116,7 @@ def get_transaction(
         raise HTTPException(status_code=404, detail="Transaction not found")
     return tx
 
-
+# Update transaction
 @router.patch("/{tx_id}", response_model=schemas.TransactionOut)
 def update_transaction(
     tx_id: int,
@@ -137,7 +137,7 @@ def update_transaction(
     db.refresh(tx)
     return tx
 
-
+# Delete transaction
 @router.delete("/{tx_id}", status_code=204)
 def delete_transaction(
     tx_id: int,
