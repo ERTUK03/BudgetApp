@@ -3,9 +3,7 @@ from typing import Optional, List
 from datetime import datetime
 from .models import TransactionType
 
-
-# ── Auth ──────────────────────────────────────────────────────────────────────
-
+# Authorization
 class UserCreate(BaseModel):
     email: EmailStr
     username: str
@@ -18,7 +16,6 @@ class UserCreate(BaseModel):
             raise ValueError("Password must be at least 6 characters")
         return v
 
-
 class UserOut(BaseModel):
     id: int
     email: str
@@ -27,32 +24,26 @@ class UserOut(BaseModel):
 
     model_config = {"from_attributes": True}
 
-
 class Token(BaseModel):
     access_token: str
     token_type: str
     user: UserOut
 
-
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
 
-
-# ── Category ──────────────────────────────────────────────────────────────────
-
+# Categories
 class CategoryCreate(BaseModel):
     name: str
     icon: str = "💰"
     color: str = "#6366f1"
     type: TransactionType
 
-
 class CategoryUpdate(BaseModel):
     name: Optional[str] = None
     icon: Optional[str] = None
     color: Optional[str] = None
-
 
 class CategoryOut(BaseModel):
     id: int
@@ -65,9 +56,7 @@ class CategoryOut(BaseModel):
 
     model_config = {"from_attributes": True}
 
-
-# ── Transaction ───────────────────────────────────────────────────────────────
-
+# Transactions
 class TransactionCreate(BaseModel):
     title: str
     amount: float
@@ -83,7 +72,6 @@ class TransactionCreate(BaseModel):
             raise ValueError("Amount must be positive")
         return v
 
-
 class TransactionUpdate(BaseModel):
     title: Optional[str] = None
     amount: Optional[float] = None
@@ -91,7 +79,6 @@ class TransactionUpdate(BaseModel):
     note: Optional[str] = None
     date: Optional[datetime] = None
     category_id: Optional[int] = None
-
 
 class TransactionOut(BaseModel):
     id: int
@@ -107,7 +94,6 @@ class TransactionOut(BaseModel):
 
     model_config = {"from_attributes": True}
 
-
 class TransactionList(BaseModel):
     items: List[TransactionOut]
     total: int
@@ -115,9 +101,7 @@ class TransactionList(BaseModel):
     per_page: int
     pages: int
 
-
-# ── Budget ────────────────────────────────────────────────────────────────────
-
+# Budgets
 class BudgetCreate(BaseModel):
     amount: float
     month: int
@@ -131,7 +115,6 @@ class BudgetCreate(BaseModel):
             raise ValueError("Month must be between 1 and 12")
         return v
 
-
 class BudgetOut(BaseModel):
     id: int
     amount: float
@@ -143,9 +126,7 @@ class BudgetOut(BaseModel):
 
     model_config = {"from_attributes": True}
 
-
-# ── Summary ───────────────────────────────────────────────────────────────────
-
+# Summaries
 class MonthlySummary(BaseModel):
     month: int
     year: int
