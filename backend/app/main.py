@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base
 from .routers import auth, transactions, categories, budgets
 
-# Create all tables
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -12,9 +11,10 @@ app = FastAPI(
     version="1.0.0",
 )
 
+# restrict allow_origins=["*"] in production 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Restrict in production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -24,7 +24,6 @@ app.include_router(auth.router)
 app.include_router(transactions.router)
 app.include_router(categories.router)
 app.include_router(budgets.router)
-
 
 @app.get("/health")
 def health():
