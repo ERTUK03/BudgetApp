@@ -7,7 +7,7 @@ from ..auth import get_current_user
 
 router = APIRouter(prefix="/api/budgets", tags=["budgets"])
 
-
+# Get budgets
 @router.get("", response_model=List[schemas.BudgetOut])
 def list_budgets(
     month: int = Query(..., ge=1, le=12),
@@ -21,7 +21,7 @@ def list_budgets(
         models.Budget.year == year,
     ).all()
 
-
+# Make budgets
 @router.post("", response_model=schemas.BudgetOut, status_code=201)
 def create_budget(
     data: schemas.BudgetCreate,
@@ -34,7 +34,7 @@ def create_budget(
     db.refresh(budget)
     return budget
 
-
+# Delete budgets
 @router.delete("/{budget_id}", status_code=204)
 def delete_budget(
     budget_id: int,
