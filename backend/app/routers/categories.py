@@ -7,7 +7,7 @@ from ..auth import get_current_user
 
 router = APIRouter(prefix="/api/categories", tags=["categories"])
 
-
+# Get categories
 @router.get("", response_model=List[schemas.CategoryOut])
 def list_categories(
     db: Session = Depends(get_db),
@@ -15,7 +15,7 @@ def list_categories(
 ):
     return db.query(models.Category).filter(models.Category.user_id == current_user.id).all()
 
-
+# Make categories
 @router.post("", response_model=schemas.CategoryOut, status_code=201)
 def create_category(
     data: schemas.CategoryCreate,
@@ -28,7 +28,7 @@ def create_category(
     db.refresh(cat)
     return cat
 
-
+# Update categories
 @router.patch("/{cat_id}", response_model=schemas.CategoryOut)
 def update_category(
     cat_id: int,
@@ -48,7 +48,7 @@ def update_category(
     db.refresh(cat)
     return cat
 
-
+# Delete categories
 @router.delete("/{cat_id}", status_code=204)
 def delete_category(
     cat_id: int,
