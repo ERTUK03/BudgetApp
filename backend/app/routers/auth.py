@@ -6,7 +6,7 @@ from ..auth import verify_password, hash_password, create_access_token, get_curr
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
-
+# Registration
 @router.post("/register", response_model=schemas.Token, status_code=status.HTTP_201_CREATED)
 def register(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
     if db.query(models.User).filter(models.User.email == user_data.email).first():
@@ -23,7 +23,7 @@ def register(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
 
-    # Seed default categories
+    # Default categories
     defaults = [
         ("🍔", "Food & Drinks", "#f97316", "expense"),
         ("🚗", "Transport", "#3b82f6", "expense"),
@@ -41,7 +41,7 @@ def register(user_data: schemas.UserCreate, db: Session = Depends(get_db)):
     token = create_access_token({"sub": str(user.id)})
     return {"access_token": token, "token_type": "bearer", "user": user}
 
-
+# Log in
 @router.post("/login", response_model=schemas.Token)
 def login(credentials: schemas.LoginRequest, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == credentials.email).first()
@@ -51,7 +51,7 @@ def login(credentials: schemas.LoginRequest, db: Session = Depends(get_db)):
     token = create_access_token({"sub": str(user.id)})
     return {"access_token": token, "token_type": "bearer", "user": user}
 
-
+# Me
 @router.get("/me", response_model=schemas.UserOut)
 def me(current_user: models.User = Depends(get_current_user)):
     return current_user
