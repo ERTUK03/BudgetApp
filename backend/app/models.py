@@ -4,11 +4,9 @@ from sqlalchemy.sql import func
 import enum
 from .database import Base
 
-
 class TransactionType(str, enum.Enum):
     income = "income"
     expense = "expense"
-
 
 class User(Base):
     __tablename__ = "users"
@@ -24,7 +22,6 @@ class User(Base):
     transactions = relationship("Transaction", back_populates="owner", cascade="all, delete-orphan")
     budgets = relationship("Budget", back_populates="owner", cascade="all, delete-orphan")
 
-
 class Category(Base):
     __tablename__ = "categories"
 
@@ -39,7 +36,6 @@ class Category(Base):
     owner = relationship("User", back_populates="categories")
     transactions = relationship("Transaction", back_populates="category")
     budgets = relationship("Budget", back_populates="category")
-
 
 class Transaction(Base):
     __tablename__ = "transactions"
@@ -58,13 +54,12 @@ class Transaction(Base):
     owner = relationship("User", back_populates="transactions")
     category = relationship("Category", back_populates="transactions")
 
-
 class Budget(Base):
     __tablename__ = "budgets"
 
     id = Column(Integer, primary_key=True, index=True)
     amount = Column(Float, nullable=False)
-    month = Column(Integer, nullable=False)  # 1-12
+    month = Column(Integer, nullable=False)
     year = Column(Integer, nullable=False)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
